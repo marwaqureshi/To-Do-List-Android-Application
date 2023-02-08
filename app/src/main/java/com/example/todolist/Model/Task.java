@@ -1,11 +1,16 @@
 package com.example.todolist.Model;
 
 public class Task {
-    private int taskId, isComplete;
+    private int taskId;
+    private boolean isComplete;
     private String taskName, taskDescription, taskDate;
 
-    public Task(){
-
+    public Task(int taskId, boolean isComplete, String taskName, String taskDescription, String taskDate) {
+        this.taskId = taskId;
+        this.isComplete = isComplete;
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.taskDate = taskDate;
     }
 
     public int getTaskId() {
@@ -16,11 +21,11 @@ public class Task {
         this.taskId = taskId;
     }
 
-    public int getIsComplete() {
+    public boolean getIsComplete() {
         return isComplete;
     }
 
-    public void setIsComplete(int isComplete) {
+    public void setIsComplete(boolean isComplete) {
         this.isComplete = isComplete;
     }
 
