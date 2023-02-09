@@ -1,12 +1,15 @@
 package com.example.todolist.Model;
 
+import java.util.Date;
+
 public class Task {
-    private int taskId;
+    private int taskId, taskImage;
     private boolean isComplete;
     private String taskName, taskDescription, taskDate;
 
-    public Task(int taskId, boolean isComplete, String taskName, String taskDescription, String taskDate) {
+    public Task(int taskId, int taskImage, boolean isComplete, String taskName, String taskDescription, String taskDate) {
         this.taskId = taskId;
+        this.taskImage = taskImage;
         this.isComplete = isComplete;
         this.taskName = taskName;
         this.taskDescription = taskDescription;
@@ -19,6 +22,12 @@ public class Task {
 
     public void setTaskId(int taskId) {
         this.taskId = taskId;
+    }
+
+    public int getTaskImage() {return taskImage;}
+
+    public void setTaskImage(int taskImage) {
+        this.taskImage = taskImage;
     }
 
     public boolean getIsComplete() {
