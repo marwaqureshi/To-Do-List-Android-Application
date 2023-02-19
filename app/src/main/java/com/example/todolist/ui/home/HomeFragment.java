@@ -21,7 +21,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todolist.MainActivity;
+import com.example.todolist.Model.AppDatabase;
 import com.example.todolist.Model.Task;
+import com.example.todolist.Model.TaskDao;
 import com.example.todolist.R;
 import com.example.todolist.databinding.FragmentHomeBinding;
 
@@ -29,9 +32,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment implements SelectListener{
+public class HomeFragment extends Fragment {
+
+    AppDatabase db;
+    TaskDao taskDao;
 
     private FragmentHomeBinding binding;
-    List<Task> taskList = new ArrayList<>();
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -51,33 +58,31 @@ public class HomeFragment extends Fragment implements SelectListener{
     @Override
     public void onStart() {
         super.onStart();
+
+        db = MainActivity.db;
+        taskDao = db.taskDao();
+
         recycler();
     }
 
     public void addToRecycler(Task task) {
-        taskList.add(task);
+        taskDao.insert(task);
         RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskList, this));
+        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskDao.getAll(), this));
     }
 
     public void removeFromRecycler(Task task){
-        taskList.remove(task);
+        taskDao.delete(task);
         RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskList, this));
+        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskDao.getAll(), this));
     }
 
     public void recycler() {
-
-        //TODO replace with list from local storage, Populate list for testing
-        taskList.add(new Task(1, R.drawable.placeholder,true, "Task1", "Descrip1", "1/1/2023"));
-        taskList.add(new Task(2, R.drawable.placeholder,true, "Task2", "Descrip2", "1/1/2023"));
-        taskList.add(new Task(3, R.drawable.placeholder,true, "Task3", "Descrip3", "1/1/2023"));
-
         RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskList,this));
+        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskDao.getAll(), this));
     }
 
     @Override

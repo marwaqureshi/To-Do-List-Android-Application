@@ -1,9 +1,14 @@
 package com.example.todolist.Model;
 
-import java.util.Date;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+
+@Entity(tableName = "tasks")
 public class Task {
-    private int taskId, taskImage;
+    @PrimaryKey
+    private int taskId;
+    private int taskImage;
     private boolean isComplete;
     private String taskName, taskDescription, taskDate;
 
