@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment implements SelectListener{
-public class HomeFragment extends Fragment {
 
     AppDatabase db;
     TaskDao taskDao;
