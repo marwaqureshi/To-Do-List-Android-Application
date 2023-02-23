@@ -23,12 +23,14 @@
     <include layout="@layout/content_main" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/btnAddItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/btnAddItem_margin"
         android:layout_marginBottom="16dp"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
-
+        android:background="#3c807a"
+        android:foregroundTint="#FFFFFF"
+        android:contentDescription="Click to add Item"
+        app:srcCompat="@android:drawable/ic_input_add" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
