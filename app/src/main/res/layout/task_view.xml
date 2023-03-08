@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/task_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_marginTop="10dp">
 
     <ImageView
         android:id="@+id/taskImage"
         android:layout_width="48dp"
         android:layout_height="60dp"
-        android:layout_marginRight="10dp"
         android:layout_centerVertical="true"
-        />
+        android:layout_marginRight="10dp" />
 
     <TextView
         android:id="@+id/taskName"
@@ -26,43 +26,39 @@
         android:id="@+id/taskDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/taskImage"
         android:layout_below="@id/taskName"
+        android:layout_toEndOf="@id/taskImage"
         android:textColor="@color/black"
         android:textSize="20dp"
-        tools:text="TaskDesc"
-        />
+        tools:text="TaskDesc" />
 
     <TextView
         android:id="@+id/taskDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/taskImage"
         android:layout_below="@id/taskDesc"
+        android:layout_toEndOf="@id/taskImage"
         android:textColor="@color/black"
         android:textSize="20dp"
-        tools:text="TaskDate"
-        />
+        tools:text="TaskDate" />
 
 
     <TextView
         android:id="@+id/isComplete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/taskImage"
         android:layout_below="@id/taskDate"
+        android:layout_toEndOf="@+id/taskImage"
         android:textColor="@color/black"
         android:textSize="20dp"
-        tools:text="isComplete"
-        />
-    
+        tools:text="isComplete" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_below="@+id/isComplete"
         android:layout_marginTop="10dp"
-        android:background="#777171"/>
-
+        android:background="#777171" />
 
 
 </RelativeLayout>
