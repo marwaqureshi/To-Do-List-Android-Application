@@ -10,6 +10,7 @@ import com.example.todolist.Model.Notifications;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -50,9 +51,13 @@ public class MainActivity extends AppCompatActivity {
         binding.appBarMain.btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                ConstraintLayout popupWindow = findViewById(R.id.popup_window);
+                popupWindow.setVisibility(View.VISIBLE);
+
+
             }
+
+
         });
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;

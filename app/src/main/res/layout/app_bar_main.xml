@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:onClick="onAddItem"
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -32,5 +33,49 @@
         android:background="#3c807a"
         android:foregroundTint="#FFFFFF"
         android:contentDescription="Click to add Item"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:onClick="showPopupWindow"/>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/popup_window"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/popup_background"
+        android:visibility="gone"
+        tools:visibility="gone">
+        <!-- set the drawable resource here -->
+        <!-- set the background color here -->
+
+        <!-- UI elements for the pop-up window here -->
+        <TextView
+            android:id="@+id/popup_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="Add New Task"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/popup_window_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="146dp"
+            android:layout_marginTop="56dp"
+            android:layout_marginEnd="146dp"
+            android:text="Add Task"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.514"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/popup_title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
