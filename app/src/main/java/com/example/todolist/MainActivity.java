@@ -1,10 +1,12 @@
 package com.example.todolist;
 
+import android.app.Notification;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 
 import com.example.todolist.Model.AppDatabase;
+import com.example.todolist.Model.Notifications;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -18,6 +20,8 @@ import androidx.room.Room;
 
 import com.example.todolist.databinding.ActivityMainBinding;
 
+import java.util.Calendar;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         db = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "tasks-db").allowMainThreadQueries().build();
 
@@ -58,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
     }
 
     @Override

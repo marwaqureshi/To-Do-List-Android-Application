@@ -1,4 +1,4 @@
-package com.example.todolist.ui.home;
+package com.example.todolist.Model.home;
 
 import android.view.View;
 import android.widget.ImageView;

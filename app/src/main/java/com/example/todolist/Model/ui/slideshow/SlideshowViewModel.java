@@ -1,4 +1,4 @@
-package com.example.todolist.ui.slideshow;
+package com.example.todolist.Model.ui.slideshow;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
