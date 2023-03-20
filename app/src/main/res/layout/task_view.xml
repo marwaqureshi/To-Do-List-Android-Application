@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/taskImage"
         android:textColor="@color/black"
-        android:textSize="20dp"
+        android:textSize="24sp"
         tools:text="TaskName" />
 
     <TextView
@@ -28,8 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/taskName"
         android:layout_toEndOf="@id/taskImage"
-        android:textColor="@color/black"
-        android:textSize="20dp"
+        android:textSize="18sp"
         tools:text="TaskDesc" />
 
     <TextView
@@ -39,7 +38,7 @@
         android:layout_below="@id/taskDesc"
         android:layout_toEndOf="@id/taskImage"
         android:textColor="@color/black"
-        android:textSize="20dp"
+        android:textSize="20sp"
         tools:text="TaskDate" />
 
 
@@ -49,8 +48,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/taskDate"
         android:layout_toEndOf="@+id/taskImage"
-        android:textColor="@color/black"
-        android:textSize="20dp"
+        android:textColor="@color/gray"
+        android:textSize="20sp"
         tools:text="isComplete" />
 
     <LinearLayout
