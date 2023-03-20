@@ -1,7 +1,6 @@
 package com.example.todolist.ui.home;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -28,10 +27,8 @@ import com.example.todolist.Model.TaskDao;
 import com.example.todolist.R;
 import com.example.todolist.databinding.FragmentHomeBinding;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class HomeFragment extends Fragment implements SelectListener{
+
     AppDatabase db;
     TaskDao taskDao;
 
@@ -92,19 +89,19 @@ public class HomeFragment extends Fragment implements SelectListener{
     @Override
     //onClick listener for recycler view
     public void onItemClicked(Task task) {
-        showDialog(task);
+        showBottomDialog(task);
     }
 
-    private void showDialog(Task task) {
+    private void showBottomDialog(Task task) {
         //declare Dialog and set dialog view to bottom_sheet_layout
-        final Dialog dialog = new Dialog(getContext());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.bottom_sheet_layout);
+        final Dialog bottomDialog = new Dialog(getContext());
+        bottomDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        bottomDialog.setContentView(R.layout.bottom_sheet_layout);
 
         //declare LinearLayouts from bottom_sheet_layout
-        LinearLayout markCompleteLayout = dialog.findViewById(R.id.bottom_sheet_markComplete);
-        LinearLayout editLayout = dialog.findViewById(R.id.bottom_sheet_edit);
-        LinearLayout deleteLayout = dialog.findViewById(R.id.bottom_sheet_delete);
+        LinearLayout markCompleteLayout = bottomDialog.findViewById(R.id.bottom_sheet_markComplete);
+        LinearLayout editLayout = bottomDialog.findViewById(R.id.bottom_sheet_edit);
+        LinearLayout deleteLayout = bottomDialog.findViewById(R.id.bottom_sheet_delete);
 
         // create onClickListener for each LinearLayout
         markCompleteLayout.setOnClickListener(new View.OnClickListener() {
@@ -126,15 +123,49 @@ public class HomeFragment extends Fragment implements SelectListener{
         deleteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO Make this open a pop-up "are you sure?" window and if confirm, delete the task
-                Toast.makeText(getContext(), "delete " + task.getTaskName(), Toast.LENGTH_SHORT).show();
+                showDeleteDialog(task);
+                bottomDialog.dismiss();}
+        });
+
+        //start dialog and display on screen with the following settings
+        bottomDialog.show();
+        bottomDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        bottomDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
+    }
+
+    private void showDeleteDialog(Task task){
+        final Dialog deleteDialog = new Dialog(getContext());
+
+        deleteDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        deleteDialog.setContentView(R.layout.delete_dialog);
+
+        //declare the buttons from delete_dialog
+        Button cancelButton = deleteDialog.findViewById(R.id.cancel_delete_button);
+        Button deleteButton = deleteDialog.findViewById(R.id.delete_button);
+
+        //start dialog and display on screen with the following settings
+        deleteDialog.show();
+        deleteDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        deleteDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        deleteDialog.getWindow().setGravity(Gravity.CENTER);
+        deleteDialog.setCancelable(false);
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //cancel the dialog and remove it from the screen
+                deleteDialog.dismiss();
             }
         });
 
-        //start dialog and display on screen
-        dialog.show();
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().setGravity(Gravity.BOTTOM);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                removeFromRecycler(task);
+                deleteDialog.dismiss();
+            }
+        });
+
     }
 }

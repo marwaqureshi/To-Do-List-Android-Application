@@ -18,7 +18,6 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
     TextView isComplete;
     TextView taskDate;
     TextView taskDesc;
-
     RelativeLayout relativeLayout;
 
 
