@@ -43,10 +43,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
 
         // Completion status for task
         if (taskList.get(position).getIsComplete()) {
-            holder.isComplete.setText("Yes");
+            holder.isComplete.setText("Completed");
         }
         else  {
-            holder.isComplete.setText("No");
+            holder.isComplete.setText("Incomplete");
         }
 
         //onClickListener for task_container designed in task_view.xml

@@ -23,6 +23,13 @@ import com.example.todolist.databinding.ActivityMainBinding;
 import java.util.Calendar;
 
 
+/**
+ * The Main activity for the application.
+ *  <p>This is the first Screen the user sees</p>
+ * @author Jay Stewart, Bryce McNary, Marwa Qureshi, Alyana Barrera, Austin Hwang
+ * @version 1.0
+ * @see <a href="https://github.com/WSU-DGscheidle/spring23_project-go-team">Visit this project's GitHub repository</a>
+ */
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -65,6 +72,11 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
     }
 
+    /**
+     * inflates the menu
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

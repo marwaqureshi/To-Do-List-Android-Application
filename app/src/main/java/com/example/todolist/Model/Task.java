@@ -3,7 +3,14 @@ package com.example.todolist.Model;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-
+/**
+ * A class for representing a To-Do task.
+ * For example:
+ * <pre>
+ *     Task task = new Task(taskId, taskImage, isComplete, taskName, taskDescription, taskDate)
+ * </pre>
+ * @author Bryce McNary, Jay Stewart
+ */
 @Entity(tableName = "tasks")
 public class Task {
     @PrimaryKey
