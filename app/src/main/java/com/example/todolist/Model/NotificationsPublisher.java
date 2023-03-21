@@ -10,11 +10,22 @@ import android.content.Intent;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+/**
+ Broadcast Receiver to schedule notifications
+ @author Jay Stewart
+ */
 public class NotificationsPublisher extends BroadcastReceiver {
 
     public static String NOTIFICATION_ID = "notification-id";
     public static String NOTIFICATION = "notification";
 
+
+    /**
+     Creates a notification object
+     @author Jay Stewart
+     @param context the context of the super class calling this method
+     @param intent used to obtain the notification object received
+     */
     @SuppressLint("MissingPermission")
     @Override
     public void onReceive(Context context, Intent intent) {

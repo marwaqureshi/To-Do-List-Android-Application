@@ -1,5 +1,4 @@
 package com.example.todolist.Model;
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -13,13 +12,22 @@ import androidx.core.app.NotificationCompat;
 import java.util.Calendar;
 
 
+
+/**
+ *  Class to create and schedule push notifications
+ * @author Jay Stewart
+ */
 public class Notifications {
 
 
     String channelId = "channel1";
     String channelName = "channelName1";
 
-    //Must create channel before you create a notification
+    /**
+     Creates notification channel to post push notifications. Required by Android 8 and up
+     @author Jay Stewart
+     @param context the context of the super class calling this method
+     */
     public void createNotificationChannel(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
@@ -28,6 +36,15 @@ public class Notifications {
         }
     }
 
+    /**
+     Creates a notification object
+     @author Jay Stewart
+     @param title title of the notification
+     @param content the content / description of the notification
+     @param image image to display with the notification
+     @param context the context of the super class calling this method
+     @return Notification
+     */
     public Notification createNotification(String title, String content, int image, Context context) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "channel1")
                 .setContentTitle(title)
@@ -37,6 +54,13 @@ public class Notifications {
         return builder.build();
     }
 
+    /**
+     Schedule a notification to be sent at a specific time
+     @author Jay Stewart
+     @param notification the notification object to schedule
+     @param calendar the time to schedule the notification
+     @param context the context of the super class calling this method
+     */
     public void scheduleNotification(Notification notification, Calendar calendar, Context context) {
         Intent intent = new Intent(context, NotificationsPublisher.class);
         intent.putExtra(NotificationsPublisher.NOTIFICATION_ID, 1);

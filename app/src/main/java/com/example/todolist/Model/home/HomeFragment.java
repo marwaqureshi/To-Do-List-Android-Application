@@ -1,4 +1,4 @@
-package com.example.todolist.ui.home;
+package com.example.todolist.Model.home;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -27,6 +27,7 @@ import com.example.todolist.Model.Task;
 import com.example.todolist.Model.TaskDao;
 import com.example.todolist.R;
 import com.example.todolist.databinding.FragmentHomeBinding;
+import com.example.todolist.ui.home.SelectListener;
 
 /**
  * The default activity Fragment that displays the list of To-Do tasks
@@ -34,7 +35,7 @@ import com.example.todolist.databinding.FragmentHomeBinding;
  * @version 1.0
  * @see android.app.Fragment
  */
-public class HomeFragment extends Fragment implements SelectListener{
+public class HomeFragment extends Fragment implements SelectListener {
 
     AppDatabase db;
     TaskDao taskDao;
