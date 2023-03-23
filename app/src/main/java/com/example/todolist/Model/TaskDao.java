@@ -7,8 +7,14 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import java.util.List;
+
+/**
+ Data Access Object used to access the local database
+ @author Jay Stewart
+ */
 @Dao
 public interface TaskDao {
+
     @Query("SELECT * FROM tasks")
     List<Task> getAll();
 
