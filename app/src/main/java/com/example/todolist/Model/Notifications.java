@@ -69,4 +69,20 @@ public class Notifications {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
+
+    /**
+     Schedule a notification to be sent at a specific time and repeat at specific intervals
+     @author Jay Stewart
+     @param notification the notification object to schedule
+     @param calendar the time to schedule the notification
+     @param context the context of the super class calling this method
+     */
+    public void scheduleRepeatingNotification(Notification notification, Calendar calendar, Calendar repeatInterval, Context context) {
+        Intent intent = new Intent(context, NotificationsPublisher.class);
+        intent.putExtra(NotificationsPublisher.NOTIFICATION_ID, 1);
+        intent.putExtra(NotificationsPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_MUTABLE);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), repeatInterval.getTimeInMillis(), pendingIntent);
+    }
 }
