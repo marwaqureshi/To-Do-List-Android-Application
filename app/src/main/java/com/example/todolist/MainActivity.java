@@ -8,9 +8,11 @@ import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
 import android.view.View;
 import android.view.Menu;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.text.ParseException;
+
 import android.text.Spanned;
 import android.view.KeyEvent;
 import android.widget.EditText;
@@ -36,10 +38,10 @@ import com.example.todolist.databinding.ActivityMainBinding;
 import java.util.TimeZone;
 
 
-
 /**
  * The Main activity for the application.
- *  <p>This is the first Screen the user sees</p>
+ * <p>This is the first Screen the user sees</p>
+ *
  * @author Jay Stewart, Bryce McNary, Marwa Qureshi, Alyana Barrera, Austin Hwang
  * @version 1.0
  * @see <a href="https://github.com/WSU-DGscheidle/spring23_project-go-team">Visit this project's GitHub repository</a>
@@ -63,8 +65,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.btnAddItem.setOnClickListener(new View.OnClickListener()
-        {
+        binding.appBarMain.btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ConstraintLayout popupWindow = findViewById(R.id.popup_window);
@@ -79,6 +80,15 @@ public class MainActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("America/New_York"));
         editText.setText(dateFormat.format(calendar.getTime()));
 
+        // Disable EditText when it gains focus
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    editText.setEnabled(false);
+                }
+            }
+        });
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
@@ -100,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * inflates the menu
+     *
      * @param menu
      * @return
      */
