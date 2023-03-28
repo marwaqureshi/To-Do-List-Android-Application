@@ -28,6 +28,7 @@ import com.example.todolist.Model.TaskDao;
 import com.example.todolist.R;
 import com.example.todolist.databinding.FragmentHomeBinding;
 import com.example.todolist.ui.home.SelectListener;
+import com.google.android.material.snackbar.Snackbar;
 
 /**
  * The default activity Fragment that displays the list of To-Do tasks
@@ -68,15 +69,13 @@ public class HomeFragment extends Fragment implements SelectListener {
     }
 
     /**
-     * Caled to add a task to the database and update the RecyclerView
+     * Called to add a task to the database and update the RecyclerView
      * @param task a Task
      * @return updated RecyclerView
      */
     public void addToRecycler(Task task) {
         taskDao.insert(task);
-        RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskDao.getAll(), this));
+        recycler();
         setRecyclerVisibility();
     }
 
@@ -87,22 +86,24 @@ public class HomeFragment extends Fragment implements SelectListener {
      */
     public void removeFromRecycler(Task task){
         taskDao.delete(task);
-        RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskDao.getAll(), this));
+        recycler();
         setRecyclerVisibility();
     }
 
+    /**
+     * Called to refresh the RecyclerView
+     * @return updated RecyclerView
+     */
     public void recycler() {
         RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskDao.getAll(), this));
+        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskDao.getIncomplete(), this));
     }
 
     /**
      * This method sets the visibility of the RecyclerView
      * <p>
-     * Sets the RecyclerView VISIBLE if the database is !empty,
+     * Sets the RecyclerView VISIBLE if the database is storing tasks WHERE isComplete = 0,
      * otherwise sets the RecyclerView INVISIBLE and
      * the TextView is set VISIBLE
      * </p>
@@ -111,7 +112,7 @@ public class HomeFragment extends Fragment implements SelectListener {
     public void setRecyclerVisibility(){
         RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
         TextView textView = getView().findViewById(R.id.noTaskTextView);
-        if (!taskDao.getAll().isEmpty()){
+        if (!taskDao.getIncomplete().isEmpty()){
             recyclerView.setVisibility(View.VISIBLE);
             textView.setVisibility(View.INVISIBLE);
         } else {
@@ -160,8 +161,21 @@ public class HomeFragment extends Fragment implements SelectListener {
         markCompleteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO Update the selected task to present as completed
-                Toast.makeText(getContext(), "Mark " + task.getTaskName() + " as complete", Toast.LENGTH_SHORT).show();
+                // Update task to complete
+                taskDao.setComplete(task.getTaskId());
+                // create Snackbar msg
+                Snackbar.make(getView(), task.getTaskName() + " Marked As Complete", Snackbar.LENGTH_LONG)
+                        .setAction("Undo", v -> {
+                            taskDao.setIncomplete(task.getTaskId());
+                            recycler();
+                            setRecyclerVisibility();
+                        })
+                        .show();
+
+                // dismiss dialog and update recycler
+                recycler();
+                setRecyclerVisibility();
+                bottomDialog.dismiss();
             }
         });
 

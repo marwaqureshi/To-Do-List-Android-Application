@@ -18,6 +18,18 @@ public interface TaskDao {
     @Query("SELECT * FROM tasks")
     List<Task> getAll();
 
+    @Query("SELECT * FROM tasks WHERE isComplete = 1")
+    List<Task> getComplete();
+
+    @Query("SELECT * FROM tasks WHERE isComplete = 0")
+    List<Task> getIncomplete();
+
+    @Query("UPDATE tasks SET isComplete = 1 WHERE taskId = :taskId")
+    void setComplete(int taskId);
+
+    @Query("UPDATE tasks SET isComplete = 0 WHERE taskId = :taskId")
+    void setIncomplete(int taskId);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Task task);
 
