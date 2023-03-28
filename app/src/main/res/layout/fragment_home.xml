@@ -20,7 +20,7 @@
         android:layout_height="match_parent"
         android:text="@string/fragment_home_noTask"
         android:paddingTop="25dp"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:textSize="22sp"
         android:visibility="visible" />
 

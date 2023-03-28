@@ -1,14 +1,14 @@
-package com.example.todolist.Model.ui.gallery;
+package com.example.todolist.Model.ui.completed;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class GalleryViewModel extends ViewModel {
+public class CompletedViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public GalleryViewModel() {
+    public CompletedViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is gallery fragment");
     }
