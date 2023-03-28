@@ -43,7 +43,7 @@ import java.util.Objects;
 
 /**
  * Instrumented Tests for the HomeFragment
- * @see com.example.todolist.ui.home.HomeFragment
+ * @see com.example.todolist.Model.home.HomeFragment
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -58,12 +58,12 @@ public class HomeFragmentInstrumentedTest {
             new ActivityScenarioRule<>(MainActivity.class);
 
     /**
-     * Tests that the TextView is visible when the database is empty
+     * Tests that the TextView is visible when the query results are empty
      * @author Bryce McNary
      */
     @Test
-    public void emptyDbTextViewTest() {
-        assumeTrue("Test skipped, database is populated", taskDao.getAll().isEmpty());
+    public void emptyQueryTextViewTest() {
+        assumeTrue("Test skipped, database is populated", taskDao.getIncomplete().isEmpty());
         ViewInteraction noTaskTextView = onView(
                 allOf(withId(R.id.noTaskTextView),
                         withParent(withParent(withId(R.id.nav_host_fragment_content_main))),
@@ -79,12 +79,12 @@ public class HomeFragmentInstrumentedTest {
     }
 
     /**
-     * Tests that the RecyclerView is visible when the database is not empty
+     * Tests that the RecyclerView is visible when the query results is not empty
      * @author Bryce McNary
      */
     @Test
-    public void populatedDbRecyclerViewTest(){
-        assumeTrue("Test skipped, database is empty", !taskDao.getAll().isEmpty());
+    public void populatedQueryRecyclerViewTest(){
+        assumeTrue("Test skipped, database is empty", !taskDao.getIncomplete().isEmpty());
         ViewInteraction recyclerView = onView(
                 allOf(withId(R.id.recyclerView),
                         withParent(withParent(withId(R.id.nav_host_fragment_content_main))),
@@ -101,7 +101,7 @@ public class HomeFragmentInstrumentedTest {
      */
     @Test
     public void clickRecyclerViewItemTest(){
-        assumeTrue("Test skipped, database is empty", !taskDao.getAll().isEmpty());
+        assumeTrue("Test skipped, database is empty", !taskDao.getIncomplete().isEmpty());
 
         ViewInteraction recyclerView = onView(
                 allOf(withId(R.id.recyclerView),
@@ -147,7 +147,7 @@ public class HomeFragmentInstrumentedTest {
      */
     @Test
     public void clickBottomSheetDeleteTest(){
-        assumeTrue("Test skipped, database is empty", !taskDao.getAll().isEmpty());
+        assumeTrue("Test skipped, database is empty", !taskDao.getIncomplete().isEmpty());
 
         ViewInteraction recyclerView = onView(
                 allOf(withId(R.id.recyclerView),
@@ -191,13 +191,13 @@ public class HomeFragmentInstrumentedTest {
         textView2.check(matches(isDisplayed()));
 
         ViewInteraction button = onView(
-                allOf(withId(R.id.cancel_delete_button), withText("CANCEL"),
+                allOf(withId(R.id.cancel_delete_button),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class))),
                         isDisplayed()));
         button.check(matches(isDisplayed()));
 
         ViewInteraction button2 = onView(
-                allOf(withId(R.id.delete_button), withText("DELETE"),
+                allOf(withId(R.id.delete_button),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class))),
                         isDisplayed()));
         button2.check(matches(isDisplayed()));
@@ -209,9 +209,9 @@ public class HomeFragmentInstrumentedTest {
      */
     @Test
     public void cancelDeleteTest(){
-        assumeTrue("Test skipped, database is empty", !taskDao.getAll().isEmpty());
+        assumeTrue("Test skipped, database is empty", !taskDao.getIncomplete().isEmpty());
 
-        int startNumOfTasks = taskDao.getAll().size();
+        int startNumOfTasks = taskDao.getIncomplete().size();
 
         ViewInteraction recyclerView = onView(
                 allOf(withId(R.id.recyclerView),
@@ -246,7 +246,7 @@ public class HomeFragmentInstrumentedTest {
                         isDisplayed()));
         linearLayout2.check(doesNotExist());
 
-        assert Objects.equals(startNumOfTasks, taskDao.getAll().size());
+        assert Objects.equals(startNumOfTasks, taskDao.getIncomplete().size());
     }
 
     /**
@@ -255,9 +255,9 @@ public class HomeFragmentInstrumentedTest {
      */
     @Test
     public void confirmDeleteTest(){
-        assumeTrue("Test skipped, database is empty", !taskDao.getAll().isEmpty());
-        Task firstTask = taskDao.getAll().get(0);
-        int startNumOfTasks = taskDao.getAll().size();
+        assumeTrue("Test skipped, database is empty", !taskDao.getIncomplete().isEmpty());
+        Task firstTask = taskDao.getIncomplete().get(0);
+        int startNumOfTasks = taskDao.getIncomplete().size();
 
         ViewInteraction recyclerView = onView(
                 allOf(withId(R.id.recyclerView),
@@ -292,7 +292,7 @@ public class HomeFragmentInstrumentedTest {
                         isDisplayed()));
         linearLayout2.check(doesNotExist());
 
-        assert Objects.equals(startNumOfTasks - 1, taskDao.getAll().size());
+        assert Objects.equals(startNumOfTasks - 1, taskDao.getIncomplete().size());
         taskDao.insert(firstTask);
     }
 
