@@ -1,13 +1,30 @@
 package com.example.todolist;
 
+import android.app.DatePickerDialog;
+
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
+import android.text.method.DigitsKeyListener;
 import android.view.View;
 import android.view.Menu;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.text.ParseException;
+
+import android.text.Spanned;
+import android.view.KeyEvent;
+import android.widget.EditText;
+import android.widget.DatePicker;
+import android.widget.EditText;
 
 import com.example.todolist.Model.AppDatabase;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -18,10 +35,12 @@ import androidx.room.Room;
 
 import com.example.todolist.databinding.ActivityMainBinding;
 
+import java.util.TimeZone;
 
 /**
  * The Main activity for the application.
- *  <p>This is the first Screen the user sees</p>
+ * <p>This is the first Screen the user sees</p>
+ *
  * @author Jay Stewart, Bryce McNary, Marwa Qureshi, Alyana Barrera, Austin Hwang
  * @version 1.0
  * @see <a href="https://github.com/WSU-DGscheidle/spring23_project-go-team">Visit this project's GitHub repository</a>
@@ -29,8 +48,10 @@ import com.example.todolist.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+
     private ActivityMainBinding binding;
     public static AppDatabase db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +67,28 @@ public class MainActivity extends AppCompatActivity {
         binding.appBarMain.btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                ConstraintLayout popupWindow = findViewById(R.id.popup_window);
+                popupWindow.setVisibility(View.VISIBLE);
+            }
+
+        });
+
+        //This will by default display today's date which is editable
+        EditText editText = findViewById(R.id.current_date);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("America/New_York"));
+        editText.setText(dateFormat.format(calendar.getTime()));
+
+        // Disable EditText when it gains focus
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    editText.setEnabled(false);
+                }
             }
         });
+
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
@@ -70,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * inflates the menu
+     *
      * @param menu
      * @return
      */
