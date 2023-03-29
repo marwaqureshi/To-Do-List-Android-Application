@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Model.home.HomeFragment">
+    tools:context=".Model.ui.completed.CompletedFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -18,7 +18,7 @@
         android:id="@+id/noTaskTextView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/fragment_home_noTask"
+        android:text="@string/fragment_completed_noTask"
         android:paddingTop="25dp"
         android:gravity="center"
         android:textSize="22sp"

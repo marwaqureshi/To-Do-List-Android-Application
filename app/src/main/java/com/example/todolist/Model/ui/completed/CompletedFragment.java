@@ -1,4 +1,4 @@
-package com.example.todolist.Model.home;
+package com.example.todolist.Model.ui.completed;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -12,7 +12,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,33 +24,33 @@ import com.example.todolist.MainActivity;
 import com.example.todolist.Model.AppDatabase;
 import com.example.todolist.Model.Task;
 import com.example.todolist.Model.TaskDao;
+import com.example.todolist.Model.home.RecyclerAdapter;
 import com.example.todolist.R;
-import com.example.todolist.databinding.FragmentHomeBinding;
+import com.example.todolist.databinding.FragmentCompletedBinding;
 import com.example.todolist.ui.home.SelectListener;
 import com.google.android.material.snackbar.Snackbar;
 
+
 /**
- * The default activity Fragment that displays the list of To-Do tasks
+ * The activity Fragment that displays the list of completed To-Do tasks
  * @author Jay Stewart, Bryce McNary, Marwa Qureshi
  * @version 1.0
  * @see android.app.Fragment
  */
-public class HomeFragment extends Fragment implements SelectListener {
+public class CompletedFragment extends Fragment implements SelectListener {
 
     AppDatabase db;
     TaskDao taskDao;
 
-    private FragmentHomeBinding binding;
-
+    private FragmentCompletedBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentCompletedBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
 
-        return binding.getRoot();
+        return root;
     }
 
     @Override
@@ -64,29 +63,7 @@ public class HomeFragment extends Fragment implements SelectListener {
         super.onStart();
         db = MainActivity.db;
         taskDao = db.taskDao();
-        recycler();
-        setRecyclerVisibility();
-    }
-
-    /**
-     * Called to add a task to the database and update the RecyclerView
-     * @param task a Task
-     * @return updated RecyclerView
-     */
-    public void addToRecycler(Task task) {
-        taskDao.insert(task);
-        recycler();
-        setRecyclerVisibility();
-    }
-
-    /**
-     * Called to remove a task from the database and update the RecyclerView
-     * @param task a Task
-     * @return updated RecyclerView
-     */
-    public void removeFromRecycler(Task task){
-        taskDao.delete(task);
-        recycler();
+        refreshRecycler();
         setRecyclerVisibility();
     }
 
@@ -94,16 +71,16 @@ public class HomeFragment extends Fragment implements SelectListener {
      * Called to refresh the RecyclerView
      * @return updated RecyclerView
      */
-    public void recycler() {
+    public void refreshRecycler(){
         RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskDao.getIncomplete(), this));
+        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskDao.getComplete(), this));
     }
 
     /**
      * This method sets the visibility of the RecyclerView
      * <p>
-     * Sets the RecyclerView VISIBLE if the database is storing tasks WHERE isComplete = 0,
+     * Sets the RecyclerView VISIBLE if the database is storing tasks WHERE isComplete = 1,
      * otherwise sets the RecyclerView INVISIBLE and
      * the TextView is set VISIBLE
      * </p>
@@ -112,19 +89,13 @@ public class HomeFragment extends Fragment implements SelectListener {
     public void setRecyclerVisibility(){
         RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
         TextView textView = getView().findViewById(R.id.noTaskTextView);
-        if (!taskDao.getIncomplete().isEmpty()){
+        if (!taskDao.getComplete().isEmpty()){
             recyclerView.setVisibility(View.VISIBLE);
             textView.setVisibility(View.INVISIBLE);
         } else {
             recyclerView.setVisibility(View.INVISIBLE);
             textView.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
     }
 
     /**
@@ -141,56 +112,47 @@ public class HomeFragment extends Fragment implements SelectListener {
     /**
      * Called to display a bottom Dialog on the screen.
      * <p>
-     *     Displays the bottom_sheet_layout ContentView on the screen.
-     *     The Dialog has three choices: edit, mark as complete, and delete.
+     *     Displays the completed_bottom_sheet_layout ContentView on the screen.
+     *     The Dialog has two choices: Mark As Incomplete, and delete.
      * </p>
      * @param task the selected Task
      */
-    private void showBottomDialog(Task task) {
-        //declare Dialog and set dialog view to bottom_sheet_layout
+    public void showBottomDialog(Task task) {
+
         final Dialog bottomDialog = new Dialog(getContext());
         bottomDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        bottomDialog.setContentView(R.layout.bottom_sheet_layout);
+        bottomDialog.setContentView(R.layout.completed_bottom_sheet_layout);
 
         //declare LinearLayouts from bottom_sheet_layout
-        LinearLayout markCompleteLayout = bottomDialog.findViewById(R.id.bottom_sheet_markComplete);
-        LinearLayout editLayout = bottomDialog.findViewById(R.id.bottom_sheet_edit);
-        LinearLayout deleteLayout = bottomDialog.findViewById(R.id.bottom_sheet_delete);
+        LinearLayout markIncompleteLayout = bottomDialog.findViewById(R.id.completed_bottom_sheet_markIncomplete);
+        LinearLayout deleteLayout = bottomDialog.findViewById(R.id.completed_bottom_sheet_delete);
 
         // create onClickListener for each LinearLayout
-        markCompleteLayout.setOnClickListener(new View.OnClickListener() {
+        markIncompleteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Update task to complete
-                taskDao.setComplete(task.getTaskId());
+                taskDao.setIncomplete(task.getTaskId());
                 // create Snackbar msg
-                Snackbar.make(getView(), task.getTaskName() + " Marked As Complete", Snackbar.LENGTH_LONG)
+                Snackbar.make(getView(), task.getTaskName() + " Marked As Incomplete", Snackbar.LENGTH_LONG)
                         .setAction("Undo", v -> {
-                            taskDao.setIncomplete(task.getTaskId());
-                            recycler();
+                            taskDao.setComplete(task.getTaskId());
+                            refreshRecycler();
                             setRecyclerVisibility();
                         })
                         .show();
 
                 // dismiss dialog and update recycler
-                recycler();
+                refreshRecycler();
                 setRecyclerVisibility();
                 bottomDialog.dismiss();
-            }
-        });
-
-        editLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO Make this ReOpen the ADD Task view and allow user to modify/update task details (or cancel)
-                Toast.makeText(getContext(), "edit " + task.getTaskName(), Toast.LENGTH_SHORT).show();
             }
         });
 
         deleteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDeleteDialog(task);
+                showDelete(task);
                 bottomDialog.dismiss();}
         });
 
@@ -209,7 +171,7 @@ public class HomeFragment extends Fragment implements SelectListener {
      * </p>
      * @param task the selected Task
      */
-    private void showDeleteDialog(Task task){
+    public void showDelete(Task task){
         final Dialog deleteDialog = new Dialog(getContext());
 
         deleteDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -238,10 +200,18 @@ public class HomeFragment extends Fragment implements SelectListener {
             @Override
             public void onClick(View view) {
                 //remove selected task from recycler and dismiss the dialog
-                removeFromRecycler(task);
+                taskDao.delete(task);
+                refreshRecycler();
+                setRecyclerVisibility();
                 deleteDialog.dismiss();
             }
         });
+    }
 
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }
