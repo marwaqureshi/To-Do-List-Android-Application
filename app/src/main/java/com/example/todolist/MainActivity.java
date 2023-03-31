@@ -1,15 +1,20 @@
 package com.example.todolist;
-
 import android.app.DatePickerDialog;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
+import androidx.appcompat.app.AppCompatActivity;
+
+
+
+import android.view.View;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
 import android.view.View;
 import android.view.Menu;
-
+import android.widget.Button;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.text.ParseException;
@@ -23,6 +28,7 @@ import android.widget.EditText;
 import com.example.todolist.Model.AppDatabase;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
@@ -71,6 +77,18 @@ public class MainActivity extends AppCompatActivity {
                 popupWindow.setVisibility(View.VISIBLE);
             }
 
+
+        });
+
+        //Return to Main Screen when cancel button is clicked
+        Button cancelButton = findViewById(R.id.cancelButton);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an intent to return to the main activity
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
         });
 
         //This will by default display today's date which is editable
