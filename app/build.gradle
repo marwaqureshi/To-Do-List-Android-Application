@@ -1,5 +1,10 @@
 plugins {
     id 'com.android.application'
+    id 'jacoco'
+}
+
+jacoco {
+    toolVersion = '0.8.8'
 }
 
 android {
@@ -12,10 +17,8 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         debug {
             testCoverageEnabled = true
