@@ -1,15 +1,20 @@
 package com.example.todolist;
-
 import android.app.DatePickerDialog;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
+import androidx.appcompat.app.AppCompatActivity;
+
+
+
+import android.view.View;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
 import android.view.View;
 import android.view.Menu;
-
+import android.widget.Button;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.text.ParseException;
@@ -24,6 +29,7 @@ import com.example.todolist.Model.AppDatabase;
 import com.example.todolist.Model.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
@@ -73,6 +79,18 @@ public class MainActivity extends AppCompatActivity {
                 popupWindow.setVisibility(View.VISIBLE);
             }
 
+
+        });
+
+        //Return to Main Screen when cancel button is clicked
+        Button cancelButton = findViewById(R.id.cancelButton);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an intent to return to the main activity
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
         });
 
         //This will by default display today's date which is editable
@@ -89,6 +107,63 @@ public class MainActivity extends AppCompatActivity {
                     editText.setEnabled(false);
                 }
             }
+        });
+
+        // Set up the due date format and restriction
+        EditText dueDateEditText = findViewById(R.id.due_date);
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+
+        dueDateEditText.addTextChangedListener(new TextWatcher() {
+            private String current = "";
+            private String mmddyyyy = "MMDDYYYY";
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().equals(current)) {
+                    String clean = s.toString().replaceAll("[^\\d.]", "");
+                    String cleanC = current.replaceAll("[^\\d.]", "");
+
+                    int cl = clean.length();
+                    int sel = cl;
+                    for (int i = 2; i <= cl && i < 6; i += 2) {
+                        sel++;
+                    }
+                    //Fix for pressing delete next to a forward slash
+                    if (clean.equals(cleanC)) sel--;
+
+                    if (clean.length() < 8) {
+                        clean = clean + mmddyyyy.substring(clean.length());
+                    } else {
+                        //This part makes sure that when we finish entering numbers
+                        //the date is correct, fixing it otherwise
+                        int month = Integer.parseInt(clean.substring(0, 2));
+                        int day = Integer.parseInt(clean.substring(2, 4));
+                        int year = Integer.parseInt(clean.substring(4, 8));
+
+                        month = month < 1 ? 1 : month > 12 ? 12 : month;
+                        Calendar cal = Calendar.getInstance();
+                        cal.set(Calendar.MONTH, month - 1);
+                        year = (year < 1900) ? 1900 : (year > cal.get(Calendar.YEAR)) ? cal.get(Calendar.YEAR) : year;
+                        cal.set(Calendar.YEAR, year);
+                        day = (day > cal.getActualMaximum(Calendar.DATE)) ? cal.getActualMaximum(Calendar.DATE) : day;
+                        clean = String.format("%02d%02d%02d", month, day, year);
+                    }
+
+                    clean = String.format("%s/%s/%s", clean.substring(0, 2),
+                            clean.substring(2, 4),
+                            clean.substring(4, 8));
+
+                    sel = sel < 0 ? 0 : sel;
+                    current = clean;
+                    dueDateEditText.setText(current);
+                    dueDateEditText.setSelection(sel < current.length() ? sel : current.length());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
         });
 
         DrawerLayout drawer = binding.drawerLayout;
