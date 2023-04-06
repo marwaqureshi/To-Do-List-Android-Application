@@ -6,6 +6,7 @@
         android:title="Font Size"
         android:entries="@array/font_names"
         android:entryValues="@array/font_values"
+        android:icon="@drawable/baseline_font_download_24"
         android:defaultValue="20"
         >
 
