@@ -67,10 +67,6 @@ public class HomeFragment extends Fragment implements SelectListener {
         super.onStart();
         db = MainActivity.db;
         taskDao = db.taskDao();
-        taskDao.insert(new Task(1, R.drawable.placeholder, false, "Task1", "desc,", "03/22/2023"));
-        taskDao.insert(new Task(2, R.drawable.placeholder, false, "Task1", "desc,", "03/25/2023"));
-        taskDao.insert(new Task(3, R.drawable.placeholder, false, "Task1", "desc,", "03/27/2022"));
-        taskDao.insert(new Task(4, R.drawable.placeholder, false, "Task1", "desc,", "05/22/2023"));
         recycler();
         setRecyclerVisibility();
     }
