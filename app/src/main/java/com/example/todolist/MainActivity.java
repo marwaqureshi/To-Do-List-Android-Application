@@ -29,6 +29,9 @@ import android.widget.EditText;
 
 import com.example.todolist.Model.AppDatabase;
 import com.example.todolist.Model.ui.settings.SettingsActivity;
+
+import com.example.todolist.Model.Task;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -47,6 +50,7 @@ import androidx.room.Room;
 
 import com.example.todolist.databinding.ActivityMainBinding;
 
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -225,5 +229,20 @@ public class MainActivity extends AppCompatActivity {
 
     public AppDatabase getDb() {
         return db;
+    }
+
+    /**
+     * Retrieves the smallest primary Key not in use by the database
+     * @return primaryKey a primary key value not in use by the database
+     */
+    private int getNextPrimaryKey(){
+        int primaryKey = 1;
+        for (Task task: db.taskDao().getAll()) {
+            if (primaryKey != task.getTaskId()){
+                return primaryKey;
+            }
+            else primaryKey += 1;
+        }
+        return primaryKey;
     }
 }
