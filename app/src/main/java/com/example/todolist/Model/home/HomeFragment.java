@@ -30,6 +30,9 @@ import com.example.todolist.databinding.FragmentHomeBinding;
 import com.example.todolist.ui.home.SelectListener;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * The default activity Fragment that displays the list of To-Do tasks
  * @author Jay Stewart, Bryce McNary, Marwa Qureshi
@@ -64,6 +67,10 @@ public class HomeFragment extends Fragment implements SelectListener {
         super.onStart();
         db = MainActivity.db;
         taskDao = db.taskDao();
+        taskDao.insert(new Task(1, R.drawable.placeholder, false, "Task1", "desc,", "03/22/2023"));
+        taskDao.insert(new Task(2, R.drawable.placeholder, false, "Task1", "desc,", "03/25/2023"));
+        taskDao.insert(new Task(3, R.drawable.placeholder, false, "Task1", "desc,", "03/27/2022"));
+        taskDao.insert(new Task(4, R.drawable.placeholder, false, "Task1", "desc,", "05/22/2023"));
         recycler();
         setRecyclerVisibility();
     }
@@ -97,7 +104,9 @@ public class HomeFragment extends Fragment implements SelectListener {
     public void recycler() {
         RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskDao.getIncomplete(), this));
+        List<Task> taskList = taskDao.getIncomplete();
+        Collections.sort(taskList);
+        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskList, this));
     }
 
     /**
@@ -182,8 +191,8 @@ public class HomeFragment extends Fragment implements SelectListener {
         editLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO Make this ReOpen the ADD Task view and allow user to modify/update task details (or cancel)
-                Toast.makeText(getContext(), "edit " + task.getTaskName(), Toast.LENGTH_SHORT).show();
+                //showEditDialog();
+                bottomDialog.dismiss();
             }
         });
 
@@ -244,4 +253,6 @@ public class HomeFragment extends Fragment implements SelectListener {
         });
 
     }
+
+    // private void
 }
