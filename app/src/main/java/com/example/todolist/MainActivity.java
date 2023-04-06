@@ -1,17 +1,22 @@
 package com.example.todolist;
-
 import android.app.DatePickerDialog;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
+import androidx.appcompat.app.AppCompatActivity;
+
+
+
+import android.view.View;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
-
+import android.widget.Button;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.text.ParseException;
@@ -27,7 +32,9 @@ import com.example.todolist.Model.ui.settings.SettingsActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+
 import androidx.annotation.NonNull;
+
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -35,6 +42,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.room.Room;
 
 import com.example.todolist.databinding.ActivityMainBinding;
@@ -56,10 +64,14 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     public static AppDatabase db;
 
+    public static SharedPreferences spf;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        spf = PreferenceManager.getDefaultSharedPreferences(this);
 
         db = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "tasks-db").allowMainThreadQueries().build();
@@ -75,6 +87,18 @@ public class MainActivity extends AppCompatActivity {
                 popupWindow.setVisibility(View.VISIBLE);
             }
 
+
+        });
+
+        //Return to Main Screen when cancel button is clicked
+        Button cancelButton = findViewById(R.id.cancelButton);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an intent to return to the main activity
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
         });
 
         //This will by default display today's date which is editable

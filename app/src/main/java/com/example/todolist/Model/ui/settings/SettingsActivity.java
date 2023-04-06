@@ -5,8 +5,12 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.example.todolist.MainActivity;
+import com.example.todolist.Model.home.HomeFragment;
 import com.example.todolist.R;
 
 public class SettingsActivity extends AppCompatActivity {

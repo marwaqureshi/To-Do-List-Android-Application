@@ -31,16 +31,16 @@
 
     <!-- Settings   -->
     <string name="title_activity_settings">Settings</string>
-    <string name="key_font"></string>
+    <string name="key_font">fontSize</string>
     <string-array name="font_names">
         <item>Small</item>
         <item>Medium</item>
         <item>Large</item>
     </string-array>
     <string-array name="font_values">
-        <item>12dp</item>
-        <item>22dp</item>
-        <item>32dp</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
     </string-array>
 
 </resources>

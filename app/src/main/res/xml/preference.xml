@@ -6,7 +6,7 @@
         android:title="Font Size"
         android:entries="@array/font_names"
         android:entryValues="@array/font_values"
-        android:defaultValue="22dp"
+        android:defaultValue="20"
         >
 
     </ListPreference>
