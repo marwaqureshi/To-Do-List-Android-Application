@@ -64,6 +64,7 @@ public class HomeFragment extends Fragment implements SelectListener {
         super.onStart();
         db = MainActivity.db;
         taskDao = db.taskDao();
+
         recycler();
         setRecyclerVisibility();
     }
