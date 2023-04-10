@@ -30,6 +30,9 @@ import com.example.todolist.databinding.FragmentHomeBinding;
 import com.example.todolist.ui.home.SelectListener;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * The default activity Fragment that displays the list of To-Do tasks
  * @author Jay Stewart, Bryce McNary, Marwa Qureshi
@@ -98,7 +101,9 @@ public class HomeFragment extends Fragment implements SelectListener {
     public void recycler() {
         RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskDao.getIncomplete(), this));
+        List<Task> taskList = taskDao.getIncomplete();
+        Collections.sort(taskList);
+        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskList, this));
     }
 
     /**
@@ -183,8 +188,8 @@ public class HomeFragment extends Fragment implements SelectListener {
         editLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO Make this ReOpen the ADD Task view and allow user to modify/update task details (or cancel)
-                Toast.makeText(getContext(), "edit " + task.getTaskName(), Toast.LENGTH_SHORT).show();
+                //showEditDialog();
+                bottomDialog.dismiss();
             }
         });
 
@@ -245,4 +250,6 @@ public class HomeFragment extends Fragment implements SelectListener {
         });
 
     }
+
+    // private void
 }
