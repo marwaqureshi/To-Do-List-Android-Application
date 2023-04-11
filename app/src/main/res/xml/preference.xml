@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <ListPreference
-        android:key="@string/key_font"
+    <EditTextPreference
+        android:key="@string/nav_header_title"
         android:title="Edit Username"
-        android:entries="@array/font_names"
-        android:entryValues="@array/font_values"
         android:icon="@drawable/baseline_username"
-        android:defaultValue="20"
+        android:defaultValue="To Do List"
         >
 
-    </ListPreference>
-    <ListPreference
-        android:key="@string/key_font"
+    </EditTextPreference>
+    <EditTextPreference
+        android:key="@string/nav_header_subtitle"
         android:title="Edit Email"
-        android:entries="@array/font_names"
-        android:entryValues="@array/font_values"
         android:icon="@drawable/baseline_email"
-        android:defaultValue="20"
+        android:defaultValue="your.email@android.com"
         >
 
-    </ListPreference>
+    </EditTextPreference>
 
     <ListPreference
         android:key="@string/key_font"
