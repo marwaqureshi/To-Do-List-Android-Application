@@ -5,7 +5,7 @@
         android:key="@string/nav_header_title"
         android:title="Edit Username"
         android:icon="@drawable/baseline_username"
-        android:defaultValue="To Do List"
+        android:defaultValue=""
         >
 
     </EditTextPreference>
@@ -13,7 +13,7 @@
         android:key="@string/nav_header_subtitle"
         android:title="Edit Email"
         android:icon="@drawable/baseline_email"
-        android:defaultValue="your.email@android.com"
+        android:defaultValue=""
         >
 
     </EditTextPreference>
