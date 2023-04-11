@@ -15,6 +15,10 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Test class for the local Android Room database
+ * @see <a href="https://github.com/WSU-DGscheidle/spring23_project-go-team/issues/5">Github Issue #5</a>
+ */
 public class AppDatabaseTest {
 
     AppDatabase db;
@@ -85,7 +89,7 @@ public class AppDatabaseTest {
                 (1, R.drawable.placeholder, false, "task1", "desc1", "1/1/1");
         taskDao.insert(task1);
         taskDao.setComplete(task1.getTaskId());
-        assert (taskDao.getAll().get(0).getIsComplete() == true);
+        assert (taskDao.getAll().get(0).getIsComplete());
         db.clearAllTables();
     }
 
@@ -112,7 +116,7 @@ public class AppDatabaseTest {
                 (1, R.drawable.placeholder, true, "task1", "desc1", "1/1/1");
         taskDao.insert(task1);
         taskDao.setIncomplete(task1.getTaskId());
-        assert (taskDao.getAll().get(0).getIsComplete() == false);
+        assert (!taskDao.getAll().get(0).getIsComplete());
         db.clearAllTables();
     }
 

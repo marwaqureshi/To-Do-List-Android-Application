@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.ViewInteraction;
@@ -60,6 +61,7 @@ public class HomeFragmentInstrumentedTest {
     /**
      * Tests that the TextView is visible when the query results are empty
      * @author Bryce McNary
+     * @see <a href="https://github.com/WSU-DGscheidle/spring23_project-go-team/issues/49">Github Issue #49</a>
      */
     @Test
     public void emptyQueryTextViewTest() {
@@ -81,6 +83,7 @@ public class HomeFragmentInstrumentedTest {
     /**
      * Tests that the RecyclerView is visible when the query results is not empty
      * @author Bryce McNary
+     * @see <a href="https://github.com/WSU-DGscheidle/spring23_project-go-team/issues/2">Github Issue #2</a>
      */
     @Test
     public void populatedQueryRecyclerViewTest(){
@@ -98,6 +101,7 @@ public class HomeFragmentInstrumentedTest {
     /**
      * Tests that the bottom dialog is visible once an item in the RecyclerView is selected
      * @author Bryce McNary
+     * @see <a href="https://github.com/WSU-DGscheidle/spring23_project-go-team/issues/37">Github Issue #37</a>
      */
     @Test
     public void clickRecyclerViewItemTest(){
@@ -144,6 +148,7 @@ public class HomeFragmentInstrumentedTest {
     /**
      * Tests that the delete dialog is visible once the delete button is clicked from the bottom Dialog
      * @author Bryce McNary
+     * @see <a href="https://github.com/WSU-DGscheidle/spring23_project-go-team/issues/20">Github Issue #20</a>
      */
     @Test
     public void clickBottomSheetDeleteTest(){
@@ -206,6 +211,7 @@ public class HomeFragmentInstrumentedTest {
     /**
      * Tests that the deletion is canceled when the cancel button from the delete Dialog is clicked
      * @author Bryce McNary
+     * @see <a href="https://github.com/WSU-DGscheidle/spring23_project-go-team/issues/8">Github Issue #8</a>
      */
     @Test
     public void cancelDeleteTest(){
@@ -252,6 +258,7 @@ public class HomeFragmentInstrumentedTest {
     /**
      * Tests that the deletion occurs when the delete button from the delete Dialog is clicked
      * @author Bryce McNary
+     * @see <a href="https://github.com/WSU-DGscheidle/spring23_project-go-team/issues/8">Github Issue #8</a>
      */
     @Test
     public void confirmDeleteTest(){
@@ -294,6 +301,54 @@ public class HomeFragmentInstrumentedTest {
 
         assert Objects.equals(startNumOfTasks - 1, taskDao.getIncomplete().size());
         taskDao.insert(firstTask);
+    }
+
+    /**
+     * Tests that Mark Complete and its undo function work properly when pressed
+     * @see <a href="https://github.com/WSU-DGscheidle/spring23_project-go-team/issues/7">Github Issue #7</a>
+     */
+    @Test
+    public void MarkCompleteTest() {
+        assumeTrue("Test skipped, database is empty", !taskDao.getIncomplete().isEmpty());
+        int startNumOfTasks = taskDao.getIncomplete().size();
+
+        ViewInteraction relativeLayout = onView(
+                allOf(withId(R.id.task_container),
+                        childAtPosition(
+                                allOf(withId(R.id.card_view),
+                                        childAtPosition(
+                                                withId(R.id.recyclerView),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        relativeLayout.perform(click());
+
+
+        ViewInteraction linearLayout = onView(
+                allOf(withId(R.id.bottom_sheet_markComplete),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                1),
+                        isDisplayed()));
+        linearLayout.perform(click());
+
+        int afterMarkedComplete = taskDao.getIncomplete().size();
+        assert (startNumOfTasks != afterMarkedComplete);
+
+        ViewInteraction materialButton = onView(
+                allOf(withId(com.google.android.material.R.id.snackbar_action), withText("Undo"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("com.google.android.material.snackbar.Snackbar$SnackbarLayout")),
+                                        0),
+                                1),
+                        isDisplayed()));
+        materialButton.perform(click());
+
+        int afterUndo = taskDao.getIncomplete().size();
+        assert (afterUndo == startNumOfTasks);
     }
 
     private static Matcher<View> withIndex(final Matcher<View> matcher, final int index) {
