@@ -3,6 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <ListPreference
         android:key="@string/key_font"
+        android:title="Edit Username"
+        android:entries="@array/font_names"
+        android:entryValues="@array/font_values"
+        android:icon="@drawable/baseline_username"
+        android:defaultValue="20"
+        >
+
+    </ListPreference>
+    <ListPreference
+        android:key="@string/key_font"
+        android:title="Edit Email"
+        android:entries="@array/font_names"
+        android:entryValues="@array/font_values"
+        android:icon="@drawable/baseline_email"
+        android:defaultValue="20"
+        >
+
+    </ListPreference>
+
+    <ListPreference
+        android:key="@string/key_font"
         android:title="Font Size"
         android:entries="@array/font_names"
         android:entryValues="@array/font_values"
