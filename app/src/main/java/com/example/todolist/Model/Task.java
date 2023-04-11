@@ -3,6 +3,10 @@ package com.example.todolist.Model;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * A class for representing a To-Do task.
  * For example:
@@ -12,7 +16,7 @@ import androidx.room.PrimaryKey;
  * @author Bryce McNary, Jay Stewart
  */
 @Entity(tableName = "tasks")
-public class Task {
+public class Task implements Comparable<Task>{
     @PrimaryKey
     private int taskId;
     private int taskImage;
@@ -72,5 +76,16 @@ public class Task {
 
     public void setTaskDate(String taskDate) {
         this.taskDate = taskDate;
+    }
+
+    @Override
+    public int compareTo(Task o) {
+        try {
+            Date d1 = new SimpleDateFormat("MM/dd/yyyy").parse(getTaskDate());
+            Date d2 = new SimpleDateFormat("MM/dd/yyyy").parse(o.getTaskDate());
+            return d1.compareTo(d2);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

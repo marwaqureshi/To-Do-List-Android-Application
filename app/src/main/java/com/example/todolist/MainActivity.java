@@ -2,6 +2,7 @@ package com.example.todolist;
 import android.app.DatePickerDialog;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -12,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
@@ -26,9 +28,15 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 
 import com.example.todolist.Model.AppDatabase;
+import com.example.todolist.Model.ui.settings.SettingsActivity;
+
+import com.example.todolist.Model.Task;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+
+import androidx.annotation.NonNull;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
@@ -37,10 +45,12 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.room.Room;
 
 import com.example.todolist.databinding.ActivityMainBinding;
 
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -58,10 +68,14 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     public static AppDatabase db;
 
+    public static SharedPreferences spf;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        spf = PreferenceManager.getDefaultSharedPreferences(this);
 
         db = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "tasks-db").allowMainThreadQueries().build();
@@ -196,6 +210,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.settings_navigation) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
@@ -204,5 +229,20 @@ public class MainActivity extends AppCompatActivity {
 
     public AppDatabase getDb() {
         return db;
+    }
+
+    /**
+     * Retrieves the smallest primary Key not in use by the database
+     * @return primaryKey a primary key value not in use by the database
+     */
+    private int getNextPrimaryKey(){
+        int primaryKey = 1;
+        for (Task task: db.taskDao().getAll()) {
+            if (primaryKey != task.getTaskId()){
+                return primaryKey;
+            }
+            else primaryKey += 1;
+        }
+        return primaryKey;
     }
 }

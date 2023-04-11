@@ -8,15 +8,30 @@ import com.example.todolist.Model.AppDatabase;
 import com.example.todolist.Model.Task;
 import com.example.todolist.Model.TaskDao;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Objects;
 
 public class AppDatabaseTest {
 
-    AppDatabase db = Room.databaseBuilder(ApplicationProvider.getApplicationContext(),
-    AppDatabase.class, "tasks-db").allowMainThreadQueries().build();
-    TaskDao taskDao = db.taskDao();
+    AppDatabase db;
+    TaskDao taskDao;
+
+
+    @Before
+    public void setUp(){
+        db = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(),
+                AppDatabase.class).allowMainThreadQueries().build();
+        taskDao = db.taskDao();
+    }
+
+    @After
+    public void tearDown(){
+        db.close();
+    }
 
     @Test
     public void testInsert() {
@@ -30,6 +45,75 @@ public class AppDatabaseTest {
         assert Objects.equals(taskDao.getAll().get(0).getTaskName(), task1.getTaskName());
         assert Objects.equals(taskDao.getAll().get(0).getTaskDescription(), task1.getTaskDescription());
         assert Objects.equals(taskDao.getAll().get(0).getTaskDate(), task1.getTaskDate());
+    }
+
+    @Test
+    public void testGetAll(){
+        Task task1 = new Task
+                (1, R.drawable.placeholder, false, "task1", "desc1", "1/1/1");
+        Task task2= new Task
+                (2, R.drawable.placeholder, true, "task2", "desc2", "1/2/1");
+        Task task3 = new Task
+                (3, R.drawable.placeholder, true, "task3", "desc3", "1/3/1");
+        taskDao.insert(task1);
+        taskDao.insert(task2);
+        taskDao.insert(task3);
+        List<Task> allTasks = taskDao.getAll();
+        assert (allTasks.size() == 3);
+        db.clearAllTables();
+    }
+
+    @Test
+    public void testGetComplete(){
+        Task task1 = new Task
+                (1, R.drawable.placeholder, false, "task1", "desc1", "1/1/1");
+        Task task2= new Task
+                (2, R.drawable.placeholder, true, "task2", "desc2", "1/2/1");
+        Task task3 = new Task
+                (3, R.drawable.placeholder, true, "task3", "desc3", "1/3/1");
+        taskDao.insert(task1);
+        taskDao.insert(task2);
+        taskDao.insert(task3);
+        List<Task> completedTasks = taskDao.getComplete();
+        assert (completedTasks.size() == 2);
+        db.clearAllTables();
+    }
+
+    @Test
+    public void testSetComplete(){
+        Task task1 = new Task
+                (1, R.drawable.placeholder, false, "task1", "desc1", "1/1/1");
+        taskDao.insert(task1);
+        taskDao.setComplete(task1.getTaskId());
+        assert (taskDao.getAll().get(0).getIsComplete() == true);
+        db.clearAllTables();
+    }
+
+    @Test
+    public void testGetIncomplete(){
+        Task task1 = new Task
+                (1, R.drawable.placeholder, false, "task1", "desc1", "1/1/1");
+        Task task2= new Task
+                (2, R.drawable.placeholder, true, "task2", "desc2", "1/2/1");
+        Task task3 = new Task
+                (3, R.drawable.placeholder, true, "task3", "desc3", "1/3/1");
+        taskDao.insert(task1);
+        taskDao.insert(task2);
+        taskDao.insert(task3);
+        List<Task> incompleteTasks = taskDao.getIncomplete();
+        assert (incompleteTasks.size() == 1);
+        db.clearAllTables();
+    }
+
+
+    @Test
+    public void testSetIncomplete(){
+        Task task1 = new Task
+                (1, R.drawable.placeholder, true, "task1", "desc1", "1/1/1");
+        taskDao.insert(task1);
+        taskDao.setIncomplete(task1.getTaskId());
+        assert (taskDao.getAll().get(0).getIsComplete() == false);
+        db.clearAllTables();
     }
 
     @Test

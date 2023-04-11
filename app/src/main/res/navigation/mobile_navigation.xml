@@ -22,4 +22,6 @@
         android:name="com.example.todolist.Model.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+
+
 </navigation>
