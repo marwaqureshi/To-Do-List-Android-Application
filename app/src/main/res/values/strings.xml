@@ -7,7 +7,6 @@
 
     <string name="menu_home">Home</string>
     <string name="menu_completed">Completed</string>
-    <string name="menu_slideshow">Slideshow</string>
 
     <string name="fragment_home_noTask">No Tasks</string>
     <string name="fragment_home_snackbar_msg">Marked As Complete</string>
