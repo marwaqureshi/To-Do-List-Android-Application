@@ -1,8 +1,12 @@
 package com.example.todolist.Model.home;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.app.Notification;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,8 +18,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,12 +31,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todolist.MainActivity;
 import com.example.todolist.Model.AppDatabase;
+import com.example.todolist.Model.Notifications;
 import com.example.todolist.Model.Task;
 import com.example.todolist.Model.TaskDao;
 import com.example.todolist.R;
 import com.example.todolist.databinding.FragmentHomeBinding;
 import com.example.todolist.ui.home.SelectListener;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * The default activity Fragment that displays the list of To-Do tasks
@@ -64,6 +78,8 @@ public class HomeFragment extends Fragment implements SelectListener {
         super.onStart();
         db = MainActivity.db;
         taskDao = db.taskDao();
+
+        //addToRecycler(new Task(3, R.drawable.placeholder, false, "task2", "desc2", "4/13/2023"));
 
         recycler();
         setRecyclerVisibility();
@@ -143,7 +159,7 @@ public class HomeFragment extends Fragment implements SelectListener {
      * Called to display a bottom Dialog on the screen.
      * <p>
      *     Displays the bottom_sheet_layout ContentView on the screen.
-     *     The Dialog has three choices: edit, mark as complete, and delete.
+     *     The Dialog has three choices: edit, mark as complete, delete, and create notification.
      * </p>
      * @param task the selected Task
      */
@@ -157,6 +173,7 @@ public class HomeFragment extends Fragment implements SelectListener {
         LinearLayout markCompleteLayout = bottomDialog.findViewById(R.id.bottom_sheet_markComplete);
         LinearLayout editLayout = bottomDialog.findViewById(R.id.bottom_sheet_edit);
         LinearLayout deleteLayout = bottomDialog.findViewById(R.id.bottom_sheet_delete);
+        LinearLayout notifLayout = bottomDialog.findViewById(R.id.bottom_sheet_notification);
 
         // create onClickListener for each LinearLayout
         markCompleteLayout.setOnClickListener(new View.OnClickListener() {
@@ -195,12 +212,63 @@ public class HomeFragment extends Fragment implements SelectListener {
                 bottomDialog.dismiss();}
         });
 
+        notifLayout.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(
+                        getContext(), Manifest.permission.POST_NOTIFICATIONS) ==
+                        PackageManager.PERMISSION_GRANTED) {
+                    // You can use the API that requires the permission.
+                }
+                else {
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                }
+
+                Notifications notifications = new Notifications();
+                notifications.createNotificationChannel(getContext());
+                Notification notif = notifications.createNotification(
+                        task.getTaskName(),
+                        task.getTaskDescription(),
+                        R.drawable.baseline_notifications_24,
+                        getContext());
+
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyy", Locale.ENGLISH);
+                try {
+                    calendar.setTime(sdf.parse(task.getTaskDate()));
+                    calendar.set(Calendar.HOUR, Calendar.HOUR);
+                    calendar.set(Calendar.MINUTE, Calendar.MINUTE);
+                    calendar.set(Calendar.SECOND, Calendar.SECOND + 5);
+
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+                notifications.scheduleNotification(notif, calendar, getContext());
+                bottomDialog.dismiss();
+            }
+        });
+
         //start dialog and display on screen with the following settings
         bottomDialog.show();
         bottomDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         bottomDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
     }
+
+    private ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // Permission is granted. Continue the action or workflow in your
+                    // app.
+                } else {
+                    // Explain to the user that the feature is unavailable because the
+                    // feature requires a permission that the user has denied. At the
+                    // same time, respect the user's decision. Don't link to system
+                    // settings in an effort to convince the user to change their
+                    // decision.
+                }
+            });
 
     /**
      * Called to display a delete Dialog on the screen.
