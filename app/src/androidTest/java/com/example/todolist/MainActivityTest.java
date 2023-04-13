@@ -72,6 +72,12 @@ public class MainActivityTest {
     /**
      * Tests the onClickListener for the Fab
      * @author Bryce McNary
+     *
+     * @see <a href="https://github.com/WSU-DGscheidle/spring23_project-go-team/issues/4">Github Issue #4</a>
+     *
+     * @see <a href="https://github.com/WSU-DGscheidle/spring23_project-go-team/issues/18">Github Issue #18</a>
+     *
+     * @see <a href="https://github.com/WSU-DGscheidle/spring23_project-go-team/issues/50">Github Issue #50</a>
      */
     @Test
     public void testFabPerformClick(){

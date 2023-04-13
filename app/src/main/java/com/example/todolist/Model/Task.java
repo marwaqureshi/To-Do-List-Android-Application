@@ -85,7 +85,7 @@ public class Task implements Comparable<Task>{
             Date d2 = new SimpleDateFormat("MM/dd/yyyy").parse(o.getTaskDate());
             return d1.compareTo(d2);
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            return 0;
         }
     }
 }
