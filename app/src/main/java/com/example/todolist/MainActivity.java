@@ -1,6 +1,7 @@
 package com.example.todolist;
 import android.app.DatePickerDialog;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -25,8 +26,10 @@ import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 
 import com.example.todolist.Model.AppDatabase;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -75,11 +78,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ConstraintLayout popupWindow = findViewById(R.id.popup_window);
+                FloatingActionButton btnAddItem = findViewById(R.id.btnAddItem);
+                //the btnAddItem floating action button will disappear once pop-up window opens
+                btnAddItem.setVisibility(View.GONE);
                 popupWindow.setVisibility(View.VISIBLE);
             }
-
-
         });
+
 
         //Return to Main Screen when cancel button is clicked
         Button cancelButton = findViewById(R.id.cancelButton);
@@ -91,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
 
         //This will by default display today's date which is editable
         EditText editText = findViewById(R.id.current_date);
