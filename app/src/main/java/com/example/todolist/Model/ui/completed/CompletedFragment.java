@@ -30,6 +30,9 @@ import com.example.todolist.databinding.FragmentCompletedBinding;
 import com.example.todolist.ui.home.SelectListener;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.Collections;
+import java.util.List;
+
 
 /**
  * The activity Fragment that displays the list of completed To-Do tasks
@@ -74,7 +77,9 @@ public class CompletedFragment extends Fragment implements SelectListener {
     public void refreshRecycler(){
         RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskDao.getComplete(), this));
+        List<Task> taskList = taskDao.getComplete();
+        Collections.sort(taskList);
+        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskList, this));
     }
 
     /**

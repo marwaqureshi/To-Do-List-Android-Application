@@ -199,6 +199,81 @@ public class CompletedFragmentInstrumentedTest {
         bottomSheetDelete.check(matches(isDisplayed()));
     }
 
+    /**
+     * Test for clicking the delete button
+     * @author Bryce McNary
+     */
+    @Test
+    public void clickDeleteTest(){
+        assumeTrue("Test skipped, No tasks WHERE isComplete = 1", !taskDao.getComplete().isEmpty());
+
+        ViewInteraction appCompatImageButton = onView(
+                allOf(withContentDescription("Open navigation drawer"),
+                        childAtPosition(
+                                allOf(withId(R.id.toolbar),
+                                        childAtPosition(
+                                                withClassName(is("com.google.android.material.appbar.AppBarLayout")),
+                                                0)),
+                                1),
+                        isDisplayed()));
+        appCompatImageButton.perform(click());
+
+        ViewInteraction navigationMenuItemView = onView(
+                allOf(withId(R.id.nav_complete),
+                        childAtPosition(
+                                allOf(withId(com.google.android.material.R.id.design_navigation_view),
+                                        childAtPosition(
+                                                withId(R.id.nav_view),
+                                                0)),
+                                2),
+                        isDisplayed()));
+        navigationMenuItemView.perform(click());
+
+        ViewInteraction recyclerView = onView(
+                allOf(withId(R.id.recyclerView),
+                        childAtPosition(
+                                withClassName(is("android.widget.RelativeLayout")),
+                                0)));
+        recyclerView.perform(actionOnItemAtPosition(0, click()));
+
+        ViewInteraction linearLayout = onView(
+                allOf(withId(R.id.completed_bottom_sheet_delete),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
+        linearLayout.perform(click());
+
+        ViewInteraction frameLayout = onView(
+                allOf(withId(android.R.id.content),
+                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class))),
+                        isDisplayed()));
+        frameLayout.check(matches(isDisplayed()));
+
+        ViewInteraction button = onView(
+                allOf(withId(R.id.cancel_delete_button), withText("Cancel"),
+                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class))),
+                        isDisplayed()));
+        button.check(matches(isDisplayed()));
+
+        ViewInteraction button2 = onView(
+                allOf(withId(R.id.delete_button), withText("Delete"),
+                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class))),
+                        isDisplayed()));
+        button2.check(matches(isDisplayed()));
+
+        ViewInteraction materialButton = onView(
+                allOf(withId(R.id.cancel_delete_button), withText("Cancel"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.LinearLayout")),
+                                        3),
+                                1),
+                        isDisplayed()));
+        materialButton.perform(click());
+    }
 
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
