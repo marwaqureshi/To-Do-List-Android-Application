@@ -61,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
     public static AppDatabase db;
 
 
+    /**
+     * called on initial creation of the activity. Perform initialization of all fragments.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -179,6 +183,9 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
+    /**
+     * called when the activity returns to the foreground
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -186,9 +193,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * inflates the menu
-     *
      * @param menu
-     * @return
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

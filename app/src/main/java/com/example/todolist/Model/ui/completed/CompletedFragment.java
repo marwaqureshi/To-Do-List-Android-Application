@@ -35,7 +35,7 @@ import java.util.List;
 
 
 /**
- * The activity Fragment that displays the list of completed To-Do tasks
+ * The activity Fragment that displays the list of completed To-Do tasks.
  * @author Jay Stewart, Bryce McNary, Marwa Qureshi
  * @version 1.0
  * @see android.app.Fragment
@@ -47,6 +47,18 @@ public class CompletedFragment extends Fragment implements SelectListener {
 
     private FragmentCompletedBinding binding;
 
+    /**
+     * Called to have the fragment instantiate its user interface view.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return Return the View for the fragment's UI, or null.
+     */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -56,11 +68,19 @@ public class CompletedFragment extends Fragment implements SelectListener {
         return root;
     }
 
+    /**
+     * called on initial creation of the fragment.
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * called when the fragment returns to the foreground
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -213,7 +233,9 @@ public class CompletedFragment extends Fragment implements SelectListener {
         });
     }
 
-
+    /**
+     * Called when the view previously created by onCreateView has been detached from the fragment.
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
