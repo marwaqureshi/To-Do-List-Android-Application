@@ -138,7 +138,7 @@ public class CompletedFragment extends Fragment implements SelectListener {
             public void onClick(View view) {
                 // Update task to complete
                 taskDao.setIncomplete(task.getTaskId());
-                // create Snackbar msg
+                // create Snack bar msg
                 Snackbar.make(getView(), task.getTaskName() + " Marked As Incomplete", Snackbar.LENGTH_LONG)
                         .setAction("Undo", v -> {
                             taskDao.setComplete(task.getTaskId());
