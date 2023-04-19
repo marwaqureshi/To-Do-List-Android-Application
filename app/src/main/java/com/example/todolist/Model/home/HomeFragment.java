@@ -8,12 +8,15 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +46,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
+import java.util.TimeZone;
 
 /**
  * The default activity Fragment that displays the list of To-Do tasks
@@ -114,7 +122,9 @@ public class HomeFragment extends Fragment implements SelectListener {
     public void recycler() {
         RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskDao.getIncomplete(), this));
+        List<Task> taskList = taskDao.getIncomplete();
+        Collections.sort(taskList);
+        recyclerView.setAdapter(new RecyclerAdapter(getContext(),taskList, this));
     }
 
     /**
@@ -200,8 +210,8 @@ public class HomeFragment extends Fragment implements SelectListener {
         editLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO Make this ReOpen the ADD Task view and allow user to modify/update task details (or cancel)
-                Toast.makeText(getContext(), "edit " + task.getTaskName(), Toast.LENGTH_SHORT).show();
+                showEditDialog(task);
+                bottomDialog.dismiss();
             }
         });
 
@@ -303,4 +313,117 @@ public class HomeFragment extends Fragment implements SelectListener {
         });
 
     }
+
+    /**
+     * Called to display an edit Dialog on the screen.
+     * <p>
+     *     Displays the edit_dialog ContentView on the screen.
+     *     The Dialog allows user to change task details.
+     * </p>
+     * @param task the selected Task
+     */
+     private void showEditDialog(Task task){
+         //initialize the dialog
+         final Dialog editDialog = new Dialog(getContext());
+         editDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+         editDialog.setContentView(R.layout.edit_dialog);
+
+         //initialize everything
+         EditText taskName = editDialog.findViewById(R.id.task_name);
+         EditText cDate = editDialog.findViewById(R.id.current_date);
+         EditText dueDate = editDialog.findViewById(R.id.due_date);
+         EditText reminder = editDialog.findViewById(R.id.reminder_time);
+         EditText taskDescription = editDialog.findViewById(R.id.description_task);
+         Button cancelButton = editDialog.findViewById(R.id.cancelButton);
+         Button updateButton = editDialog.findViewById(R.id.update_button);
+
+         cDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+             @Override
+             public void onFocusChange(View v, boolean hasFocus) {
+                 if (hasFocus) {
+                     cDate.setEnabled(false);
+                 }
+             }
+         });
+         cancelButton.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 editDialog.dismiss();
+             }
+         });
+
+         dueDate.addTextChangedListener(new TextWatcher() {
+             private String current = "";
+             private String mmddyyyy = "MMDDYYYY";
+             @Override
+             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+             @Override
+             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                 if (!s.toString().equals(current)) {
+                     String clean = s.toString().replaceAll("[^\\d.]", "");
+                     String cleanC = current.replaceAll("[^\\d.]", "");
+
+                     int cl = clean.length();
+                     int sel = cl;
+                     for (int i = 2; i <= cl && i < 6; i += 2) {
+                         sel++;
+                     }
+                     //Fix for pressing delete next to a forward slash
+                     if (clean.equals(cleanC)) sel--;
+
+                     if (clean.length() < 8) {
+                         clean = clean + mmddyyyy.substring(clean.length());
+                     } else {
+                         //This part makes sure that when we finish entering numbers
+                         //the date is correct, fixing it otherwise
+                         int month = Integer.parseInt(clean.substring(0, 2));
+                         int day = Integer.parseInt(clean.substring(2, 4));
+                         int year = Integer.parseInt(clean.substring(4, 8));
+
+                         month = month < 1 ? 1 : month > 12 ? 12 : month;
+                         Calendar cal = Calendar.getInstance();
+                         cal.set(Calendar.MONTH, month - 1);
+                         year = (year < 1900) ? 1900 : (year > cal.get(Calendar.YEAR)) ? cal.get(Calendar.YEAR) : year;
+                         cal.set(Calendar.YEAR, year);
+                         day = (day > cal.getActualMaximum(Calendar.DATE)) ? cal.getActualMaximum(Calendar.DATE) : day;
+                         clean = String.format("%02d%02d%02d", month, day, year);
+                     }
+
+                     clean = String.format("%s/%s/%s", clean.substring(0, 2),
+                             clean.substring(2, 4),
+                             clean.substring(4, 8));
+
+                     sel = sel < 0 ? 0 : sel;
+                     current = clean;
+                     dueDate.setText(current);
+                     dueDate.setSelection(sel < current.length() ? sel : current.length());
+                 }
+             }
+
+             @Override
+             public void afterTextChanged(Editable s) {}
+         });
+
+         updateButton.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 addToRecycler(new Task(task.getTaskId(), task.getTaskImage(), task.getIsComplete(), taskName.getText().toString(), taskDescription.getText().toString(), dueDate.getText().toString()));
+                 editDialog.dismiss();
+             }
+         });
+
+         //populate page with stored values
+         taskName.setText(task.getTaskName());
+         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("America/New_York"));
+         cDate.setText(dateFormat.format(calendar.getTime()));
+         dueDate.setText(task.getTaskDate());
+         taskDescription.setText(task.getTaskDescription());
+
+         //start the dialog
+         editDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+         editDialog.show();
+
+     }
 }

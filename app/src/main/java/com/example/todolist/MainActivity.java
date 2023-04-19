@@ -1,6 +1,7 @@
 package com.example.todolist;
 import android.app.DatePickerDialog;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,7 +9,8 @@ import android.text.Editable;
 import android.text.InputFilter;
 import androidx.appcompat.app.AppCompatActivity;
 
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import android.view.View;
 import android.text.TextWatcher;
@@ -26,9 +28,15 @@ import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 
 import com.example.todolist.Model.AppDatabase;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.example.todolist.Model.ui.settings.SettingsActivity;
+
+import com.example.todolist.Model.Task;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -47,6 +55,7 @@ import androidx.room.Room;
 
 import com.example.todolist.databinding.ActivityMainBinding;
 
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -84,11 +93,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ConstraintLayout popupWindow = findViewById(R.id.popup_window);
+                FloatingActionButton btnAddItem = findViewById(R.id.btnAddItem);
+                //the btnAddItem floating action button will disappear once pop-up window opens
+                btnAddItem.setVisibility(View.GONE);
                 popupWindow.setVisibility(View.VISIBLE);
             }
-
-
         });
+
 
         //Return to Main Screen when cancel button is clicked
         Button cancelButton = findViewById(R.id.cancelButton);
@@ -100,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
 
         //This will by default display today's date which is editable
         EditText editText = findViewById(R.id.current_date);
@@ -129,6 +142,13 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                // Get current year
+                int currentYear = 0;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    currentYear = LocalDate.now().getYear();
+                }
+
                 if (!s.toString().equals(current)) {
                     String clean = s.toString().replaceAll("[^\\d.]", "");
                     String cleanC = current.replaceAll("[^\\d.]", "");
@@ -153,7 +173,11 @@ public class MainActivity extends AppCompatActivity {
                         month = month < 1 ? 1 : month > 12 ? 12 : month;
                         Calendar cal = Calendar.getInstance();
                         cal.set(Calendar.MONTH, month - 1);
-                        year = (year < 1900) ? 1900 : (year > cal.get(Calendar.YEAR)) ? cal.get(Calendar.YEAR) : year;
+
+                        //The line of code below sets minimum year to current year and max year of due date as next year
+                        //This auto-corrects when year is for example, 1800 or 2028
+                        year = (year < currentYear) ? currentYear : (year > cal.get(Calendar.YEAR) + 1) ? cal.get(Calendar.YEAR) + 1 : year;
+
                         cal.set(Calendar.YEAR, year);
                         day = (day > cal.getActualMaximum(Calendar.DATE)) ? cal.getActualMaximum(Calendar.DATE) : day;
                         clean = String.format("%02d%02d%02d", month, day, year);
@@ -179,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_complete, R.id.nav_slideshow)
+                R.id.nav_home, R.id.nav_complete)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -225,5 +249,20 @@ public class MainActivity extends AppCompatActivity {
 
     public AppDatabase getDb() {
         return db;
+    }
+
+    /**
+     * Retrieves the smallest primary Key not in use by the database
+     * @return primaryKey a primary key value not in use by the database
+     */
+    private int getNextPrimaryKey(){
+        int primaryKey = 1;
+        for (Task task: db.taskDao().getAll()) {
+            if (primaryKey != task.getTaskId()){
+                return primaryKey;
+            }
+            else primaryKey += 1;
+        }
+        return primaryKey;
     }
 }
