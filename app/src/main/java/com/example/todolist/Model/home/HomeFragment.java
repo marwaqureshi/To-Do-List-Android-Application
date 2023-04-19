@@ -79,7 +79,7 @@ public class HomeFragment extends Fragment implements SelectListener {
         db = MainActivity.db;
         taskDao = db.taskDao();
 
-        //addToRecycler(new Task(3, R.drawable.placeholder, false, "task2", "desc2", "4/13/2023"));
+        //addToRecycler(new Task(3, R.drawable.placeholder, false, "task2", "desc2", "4/19/2023"));
 
         recycler();
         setRecyclerVisibility();
@@ -258,16 +258,6 @@ public class HomeFragment extends Fragment implements SelectListener {
 
     private ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    // Permission is granted. Continue the action or workflow in your
-                    // app.
-                } else {
-                    // Explain to the user that the feature is unavailable because the
-                    // feature requires a permission that the user has denied. At the
-                    // same time, respect the user's decision. Don't link to system
-                    // settings in an effort to convince the user to change their
-                    // decision.
-                }
             });
 
     /**
