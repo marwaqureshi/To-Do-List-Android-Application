@@ -28,6 +28,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 
 import com.example.todolist.Model.AppDatabase;
+import com.example.todolist.Model.Task;
 import com.example.todolist.Model.ui.settings.SettingsActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -173,6 +174,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
+
+        EditText taskName = findViewById(R.id.task_name);
+        EditText description = findViewById(R.id.description_task);
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
