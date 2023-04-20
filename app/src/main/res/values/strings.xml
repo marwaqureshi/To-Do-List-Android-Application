@@ -27,6 +27,8 @@
     <string name="delete_dialog_ays">Are You Sure?</string>
     <string name="delete_dialog_msg">Do you really want to delete this task? This process cannot be undone.</string>
 
+    <string name="bottom_sheet_notif">Create Notification</string>
+
 
     <!-- Settings   -->
     <string name="title_activity_settings">Settings</string>
