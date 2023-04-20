@@ -1,4 +1,5 @@
 package com.example.todolist;
+
 import android.app.DatePickerDialog;
 
 import android.content.Intent;
@@ -6,8 +7,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
-import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.appcompat.app.AppCompatActivity;
 
 
 import android.view.View;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.text.ParseException;
@@ -125,8 +127,10 @@ public class MainActivity extends AppCompatActivity {
         dueDateEditText.addTextChangedListener(new TextWatcher() {
             private String current = "";
             private String mmddyyyy = "MMDDYYYY";
+
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -172,10 +176,20 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
-        DrawerLayout drawer = binding.drawerLayout;
+        EditText taskName = findViewById(R.id.task_name);
+        EditText description = findViewById(R.id.description_task);
+
+        final Button addTaskBtn = findViewById(R.id.add_task_button);
+        addTaskBtn.setOnClickListener(v -> createTask(taskName.getText().toString(),
+                description.getText().toString(),
+                dueDateEditText.getText().toString()));
+
+
+                DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -191,6 +205,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    private void createTask(String taskName, String description, String dueDate) {
+        if (!(taskName.isEmpty()) &&
+                !(description.isEmpty()) &&
+                !(dueDate.isEmpty())) {
+
+            db.taskDao().insert(new Task(getNextPrimaryKey(),
+                    R.drawable.baseline_priority_high_24, false,
+                    taskName,
+                    description,
+                    dueDate));
+        }
     }
 
     /**
