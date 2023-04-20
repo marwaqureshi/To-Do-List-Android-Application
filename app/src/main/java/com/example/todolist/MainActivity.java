@@ -175,9 +175,6 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
-        EditText taskName = findViewById(R.id.task_name);
-        EditText description = findViewById(R.id.description_task);
-
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
