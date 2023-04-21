@@ -213,9 +213,16 @@ public class MainActivity extends AppCompatActivity {
         EditText description = findViewById(R.id.description_task);
 
         final Button addTaskBtn = findViewById(R.id.add_task_button);
-        addTaskBtn.setOnClickListener(v -> createTask(taskName.getText().toString(),
-                description.getText().toString(),
-                dueDateEditText.getText().toString()));
+        addTaskBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createTask(taskName.getText().toString(),
+                        description.getText().toString(),
+                        dueDateEditText.getText().toString());
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(intent);
+            }});
+
 
 
                 DrawerLayout drawer = binding.drawerLayout;
