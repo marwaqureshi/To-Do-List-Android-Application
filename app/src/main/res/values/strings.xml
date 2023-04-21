@@ -1,13 +1,12 @@
 <resources>
     <string name="app_name">ToDoList</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">To Do List</string>
+    <string name="nav_header_subtitle">your.email@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_completed">Completed</string>
-    <string name="menu_slideshow">Slideshow</string>
 
     <string name="fragment_home_noTask">No Tasks</string>
     <string name="fragment_home_snackbar_msg">Marked As Complete</string>
@@ -27,4 +26,22 @@
     <string name="delete_dialog_cancel">Cancel</string>
     <string name="delete_dialog_ays">Are You Sure?</string>
     <string name="delete_dialog_msg">Do you really want to delete this task? This process cannot be undone.</string>
+
+    <string name="bottom_sheet_notif">Create Notification</string>
+
+
+    <!-- Settings   -->
+    <string name="title_activity_settings">Settings</string>
+    <string name="key_font">fontSize</string>
+    <string-array name="font_names">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
+    <string-array name="font_values">
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+    </string-array>
+
 </resources>

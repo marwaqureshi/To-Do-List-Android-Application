@@ -1,20 +1,27 @@
 package com.example.todolist;
+
 import android.app.DatePickerDialog;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import android.view.View;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.text.ParseException;
@@ -24,12 +31,21 @@ import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 
 import com.example.todolist.Model.AppDatabase;
 import com.example.todolist.Model.Task;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.todolist.Model.ui.settings.SettingsActivity;
+
+import com.example.todolist.Model.Task;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+
+import androidx.annotation.NonNull;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
@@ -38,6 +54,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.room.Room;
 
 import com.example.todolist.databinding.ActivityMainBinding;
@@ -60,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     public static AppDatabase db;
 
+    public static SharedPreferences spf;
+
 
     /**
      * called on initial creation of the activity. Perform initialization of all fragments.
@@ -68,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        spf = PreferenceManager.getDefaultSharedPreferences(this);
 
         db = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "tasks-db").allowMainThreadQueries().build();
@@ -80,11 +101,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ConstraintLayout popupWindow = findViewById(R.id.popup_window);
+                FloatingActionButton btnAddItem = findViewById(R.id.btnAddItem);
+                //the btnAddItem floating action button will disappear once pop-up window opens
+                btnAddItem.setVisibility(View.GONE);
                 popupWindow.setVisibility(View.VISIBLE);
             }
-
-
         });
+
 
         //Return to Main Screen when cancel button is clicked
         Button cancelButton = findViewById(R.id.cancelButton);
@@ -96,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
 
         //This will by default display today's date which is editable
         EditText editText = findViewById(R.id.current_date);
@@ -120,11 +145,20 @@ public class MainActivity extends AppCompatActivity {
         dueDateEditText.addTextChangedListener(new TextWatcher() {
             private String current = "";
             private String mmddyyyy = "MMDDYYYY";
+
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                // Get current year
+                int currentYear = 0;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    currentYear = LocalDate.now().getYear();
+                }
+
                 if (!s.toString().equals(current)) {
                     String clean = s.toString().replaceAll("[^\\d.]", "");
                     String cleanC = current.replaceAll("[^\\d.]", "");
@@ -149,7 +183,11 @@ public class MainActivity extends AppCompatActivity {
                         month = month < 1 ? 1 : month > 12 ? 12 : month;
                         Calendar cal = Calendar.getInstance();
                         cal.set(Calendar.MONTH, month - 1);
-                        year = (year < 1900) ? 1900 : (year > cal.get(Calendar.YEAR)) ? cal.get(Calendar.YEAR) : year;
+
+                        //The line of code below sets minimum year to current year and max year of due date as next year
+                        //This auto-corrects when year is for example, 1800 or 2028
+                        year = (year < currentYear) ? currentYear : (year > cal.get(Calendar.YEAR) + 1) ? cal.get(Calendar.YEAR) + 1 : year;
+
                         cal.set(Calendar.YEAR, year);
                         day = (day > cal.getActualMaximum(Calendar.DATE)) ? cal.getActualMaximum(Calendar.DATE) : day;
                         clean = String.format("%02d%02d%02d", month, day, year);
@@ -167,15 +205,25 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
-        DrawerLayout drawer = binding.drawerLayout;
+        EditText taskName = findViewById(R.id.task_name);
+        EditText description = findViewById(R.id.description_task);
+
+        final Button addTaskBtn = findViewById(R.id.add_task_button);
+        addTaskBtn.setOnClickListener(v -> createTask(taskName.getText().toString(),
+                description.getText().toString(),
+                dueDateEditText.getText().toString()));
+
+
+                DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_complete, R.id.nav_slideshow)
+                R.id.nav_home, R.id.nav_complete)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -191,6 +239,19 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
     }
 
+    private void createTask(String taskName, String description, String dueDate) {
+        if (!(taskName.isEmpty()) &&
+                !(description.isEmpty()) &&
+                !(dueDate.isEmpty())) {
+
+            db.taskDao().insert(new Task(getNextPrimaryKey(),
+                    R.drawable.baseline_priority_high_24, false,
+                    taskName,
+                    description,
+                    dueDate));
+        }
+    }
+
     /**
      * inflates the menu
      * @param menu
@@ -200,6 +261,17 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.settings_navigation) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
