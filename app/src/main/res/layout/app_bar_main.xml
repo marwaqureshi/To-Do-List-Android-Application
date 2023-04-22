@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:onClick="onAddItem"
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -16,7 +15,6 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
             app:popupTheme="@style/Theme.ToDoList" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -30,11 +28,12 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/btnAddItem_margin"
         android:layout_marginBottom="16dp"
-        android:background="#3c807a"
         android:foregroundTint="#FFFFFF"
         android:contentDescription="Click to add Item"
         app:srcCompat="@android:drawable/ic_input_add"
-        android:onClick="showPopupWindow"/>
+        android:clickable='true'
+        android:onClick="showPopupWindow" />
+
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
