@@ -15,6 +15,9 @@ import com.example.todolist.ui.home.SelectListener;
 
 import java.util.List;
 
+/**
+ * Class is responsible for providing views that represent items in a data set.
+ */
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
 
     Context context;

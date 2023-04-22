@@ -15,6 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.todolist.MainActivity;
 import com.example.todolist.R;
 
+/**
+ * The RecyclerViewHolder class describes a tasks view and metadata about its place within the RecyclerView.
+ */
 public class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
     ImageView taskImage;

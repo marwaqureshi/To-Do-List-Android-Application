@@ -80,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
     public static SharedPreferences spf;
 
 
+    /**
+     * called on initial creation of the activity. Perform initialization of all fragments.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -209,9 +213,16 @@ public class MainActivity extends AppCompatActivity {
         EditText description = findViewById(R.id.description_task);
 
         final Button addTaskBtn = findViewById(R.id.add_task_button);
-        addTaskBtn.setOnClickListener(v -> createTask(taskName.getText().toString(),
-                description.getText().toString(),
-                dueDateEditText.getText().toString()));
+        addTaskBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createTask(taskName.getText().toString(),
+                        description.getText().toString(),
+                        dueDateEditText.getText().toString());
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(intent);
+            }});
+
 
 
                 DrawerLayout drawer = binding.drawerLayout;
@@ -227,6 +238,9 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
+    /**
+     * called when the activity returns to the foreground
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -247,9 +261,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * inflates the menu
-     *
      * @param menu
-     * @return
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

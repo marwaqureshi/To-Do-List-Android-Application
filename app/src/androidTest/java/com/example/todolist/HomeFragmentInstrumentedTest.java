@@ -2,6 +2,8 @@ package com.example.todolist;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
@@ -349,6 +351,92 @@ public class HomeFragmentInstrumentedTest {
 
         int afterUndo = taskDao.getIncomplete().size();
         assert (afterUndo == startNumOfTasks);
+    }
+
+    /**
+     * Tests the edit dialog functionality
+     * @author
+     *
+     * @see <a href="https://github.com/WSU-DGscheidle/spring23_project-go-team/issues/84">Github Issue #84</a>
+     */
+    @Test
+    public void EditTaskTest() {
+        assumeTrue("Test skipped, database is empty", !taskDao.getIncomplete().isEmpty());
+        ViewInteraction relativeLayout = onView(
+                allOf(withId(R.id.task_container),
+                        childAtPosition(
+                                allOf(withId(R.id.card_view),
+                                        childAtPosition(
+                                                withId(R.id.recyclerView),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        relativeLayout.perform(click());
+
+        ViewInteraction linearLayout = onView(
+                allOf(withId(R.id.bottom_sheet_edit),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
+        linearLayout.perform(click());
+
+        ViewInteraction appCompatEditText = onView(
+                allOf(withId(R.id.description_task),
+                        childAtPosition(
+                                allOf(withId(R.id.popup_window),
+                                        childAtPosition(
+                                                withId(android.R.id.content),
+                                                0)),
+                                5),
+                        isDisplayed()));
+        appCompatEditText.perform(replaceText("New Description"));
+
+        ViewInteraction appCompatEditText2 = onView(
+                allOf(withId(R.id.description_task), withText("New Description"),
+                        childAtPosition(
+                                allOf(withId(R.id.popup_window),
+                                        childAtPosition(
+                                                withId(android.R.id.content),
+                                                0)),
+                                5),
+                        isDisplayed()));
+        appCompatEditText2.perform(closeSoftKeyboard());
+
+        ViewInteraction appCompatEditText3 = onView(
+                allOf(withId(R.id.task_name),
+                        childAtPosition(
+                                allOf(withId(R.id.popup_window),
+                                        childAtPosition(
+                                                withId(android.R.id.content),
+                                                0)),
+                                1),
+                        isDisplayed()));
+        appCompatEditText3.perform(replaceText("Edited Test"));
+
+        ViewInteraction appCompatEditText4 = onView(
+                allOf(withId(R.id.task_name),
+                        childAtPosition(
+                                allOf(withId(R.id.popup_window),
+                                        childAtPosition(
+                                                withId(android.R.id.content),
+                                                0)),
+                                1),
+                        isDisplayed()));
+        appCompatEditText4.perform(closeSoftKeyboard());
+
+        ViewInteraction materialButton = onView(
+                allOf(withId(R.id.update_button), withText("Update"),
+                        childAtPosition(
+                                allOf(withId(R.id.popup_window),
+                                        childAtPosition(
+                                                withId(android.R.id.content),
+                                                0)),
+                                7),
+                        isDisplayed()));
+        materialButton.perform(click());
     }
 
     private static Matcher<View> withIndex(final Matcher<View> matcher, final int index) {

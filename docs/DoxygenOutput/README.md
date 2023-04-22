@@ -1,1 +1,1 @@
-Place DoxygenOutput here
+The `index.html` file will open the homepage of the doxygen output and can be found in /DoxygenOutput/html/
